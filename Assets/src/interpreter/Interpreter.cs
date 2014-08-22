@@ -102,9 +102,9 @@ public class Interpreter
     private string FormatOutput(string output)
     {
         return string.IsNullOrEmpty(output) ? string.Empty 
-            :      string.Join("\n", output.Remove(output.Length-1)
-                    .Split('\n')
-                    .Reverse().ToArray());
+        :      string.Join("\n", output.Remove(output.Length-1)
+                                       .Split('\n')
+                                       .Reverse().ToArray());
     }
 
     /// <summary>

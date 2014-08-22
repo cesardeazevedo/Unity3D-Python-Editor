@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -41,7 +39,7 @@ public class EditorView
 	private Interpreter PythonMachine = new Interpreter();
 	
 	/// <summary>
-	/// Use for match de code
+	/// Use for match code
 	/// </summary>
 	private const string MatchCode = @"(\t)|(\w+)|(\s+)|(.)";
 	
@@ -79,7 +77,7 @@ public class EditorView
 	{
 		try {
 			StreamReader file = new StreamReader(CurrentTarget.FilePath, 
-											     System.Text.Encoding.UTF8);
+                                                 System.Text.Encoding.UTF8);
 											 
 			Buffer.CodeBuffer = file.ReadToEnd();
 		} catch(Exception ex) {
@@ -94,40 +92,27 @@ public class EditorView
 	/// Editors the view controll.
 	/// </summary>
 	public void EditorViewGUI(bool IsInterpreter)
-	{
-		
-		//Debug.Log(EditorMemoryData.Instance.Buffers.Count);
-						
+	{	
+		//Get box rect and background				
 		GetBoxRect();	
-		
+		//Begin ScrollView of box
 		PositionScroll = GUI.BeginScrollView(new Rect(0, LayoutRect.y, LayoutRect.width + 15, LayoutRect.height), 	
 		                                     PositionScroll, new Rect(0, LayoutRect.yMin, 800, 23 * Buffer.TotalLines));			
-		
 		//Draw Line Numbers.
 		EventRepainted();
-		
 		//Draw Cursor for text
 		Cursor();
-
 		//HighLight Current Line.
 		HighlighLine();		
-		
 		//HightLigh Selection Text
 		HighlighSelected();		
-
+		
 		GUI.EndScrollView();
 		
-		if(InterpreterView) DrawInterpreter();
-		
-		//FocusControl();
-		
+		if(InterpreterView) 
+			DrawInterpreter();
+		//KeyBoard Events
 		KeyBoardController();
-		
-		//List<Code> c = EditorMemoryData.RestoreAllBuffers();
-		//if(c.Count >0)
-//			Debug.Log(c[0].ToString());
-		//else
-//			Debug.Log("Zero");
 	}
 	
 	/// <summary>
@@ -135,10 +120,8 @@ public class EditorView
 	/// </summary>
 	private void EventRepainted()
 	{
-		
 		if(Event.current.type == EventType.repaint) 
 		{
-			
 			if(!InterpreterView)
 				//Draw Code on Inspector
 				DrawCodeOnGUI();
@@ -156,7 +139,6 @@ public class EditorView
 	
 	private void GetBoxRect()
 	{
-		
 		//Code Rect Layout
 		PositionSyntax = LayoutRect = GUILayoutUtility.GetRect(0, Screen.width, 1, Screen.height - Padding.y);
 		
@@ -165,7 +147,6 @@ public class EditorView
 		
 		//Bottom value of box
 		Bottom = LayoutRect.yMax-40;
-			
 	}
 	
 	/// <summary>
@@ -173,7 +154,6 @@ public class EditorView
 	/// </summary>
 	private void DrawCodeOnGUI()
 	{
-	
 		if(Buffer.Lines.Count == 0) {
 			Buffer.Lines = new List<List<string>>();
 			
@@ -235,7 +215,6 @@ public class EditorView
 	/// </summary>
 	private void DrawInterpreterOnGUI()
 	{
-		
 		PositionSyntax.y = Bottom;
 		
 		PositionSyntax.x = 45;
@@ -266,7 +245,6 @@ public class EditorView
 	
 	private void DrawInterpreter()
 	{
-		
 		isSelection = false;
 		
 		Rect Pointer = new Rect(18,Bottom,50,10);
@@ -275,13 +253,11 @@ public class EditorView
 		
 		//Separate line
 		GUI.Box(new Rect(0, Bottom-7, Screen.width , 1), GUIContent.none, Style.BackgroundLines);
-		GUI.Label(Pointer,">>>", Style.Interpreter);
-				
+		GUI.Label(Pointer,">>>", Style.Interpreter);			
 	}
 	
 	public void InitializeInterpreter()
 	{
-		
 		float PointerX = Mathf.Max(Padding.x+15, Event.current.mousePosition.x);
 		
 		Vector2 VectorXY = ToNumberLine(PointerX, 0);
@@ -292,7 +268,6 @@ public class EditorView
 		Buffer.SetColumnIndex();
 
 		Repaint();
-		
 	}
 		
 	/// <summary>
@@ -300,7 +275,6 @@ public class EditorView
 	/// </summary>
 	private void LineNumbers()
 	{
-		
 		//Background Lines
 		GUI.Box(new Rect(PositionScroll.x, LayoutRect.y, InterpreterView ? 15 : 40 , Screen.height + PositionScroll.y), GUIContent.none, Style.BackgroundLines);
 
@@ -323,7 +297,6 @@ public class EditorView
 	/// </summary>
 	public void Cursor()
 	{
-	
 		//Cursor for Editing Text.
 		EditorGUIUtility.AddCursorRect(new Rect(LayoutRect.x, LayoutRect.y, LayoutRect.width + PositionScroll.x, LayoutRect.height - 15), MouseCursor.Text);
 		
@@ -343,7 +316,6 @@ public class EditorView
 	/// </summary>
 	private void HighlighLine()
 	{
-
 		if(Event.current.type == EventType.MouseDown)
 		{
 		
@@ -359,12 +331,6 @@ public class EditorView
 				isSelection = false;
 				
 				Repaint();
-				
-			}else {
-				
-				//InitializeInterpreter();
-				//Repaint();
-				//return;
 			}
 		}
 		
@@ -386,7 +352,6 @@ public class EditorView
 	/// </summary>
 	private void HighlighSelected()
 	{
-		
 		//Double Cliked (select a single word)
 		if(Event.current.type == EventType.MouseDown && Event.current.clickCount == 2)
 		{
@@ -407,8 +372,7 @@ public class EditorView
 						//word width
 						width = index == Buffer.Column ? word.Length : 0;
 						
-						index = width == 0 ? index+1 : index;						
-						
+						index = width == 0 ? index+1 : index;					
 					}
 			}
 			
@@ -449,12 +413,11 @@ public class EditorView
 	/// </summary>
 	public void KeyBoardController()
 	{
-		
 		Event e = Event.current;
 		
 		if(e.type == EventType.keyDown)
 		{
-					
+		
 			switch(e.keyCode) 
 			{			
 				case KeyCode.Backspace:
@@ -527,8 +490,7 @@ public class EditorView
 	/// Executes the interpreter.
 	/// </summary>
 	private void ExecuteInterpreter()
-	{
-		
+	{	
 		string output = PythonMachine.Compile(Buffer.CurrentLine);
 		
 		Buffer.AppendInterpreter(output);
@@ -553,7 +515,6 @@ public class EditorView
 	/// <param name="text">Text</param>
 	private int[] GetRangeText(Rect range, string text)
 	{
-		
 		//Transform selection rect to coordenadies column number
 		Vector2 RangeMin = ToNumberLine(range.xMin, range.y);
 		Vector2 RangeMax = ToNumberLine(range.xMax, range.y);
@@ -570,7 +531,6 @@ public class EditorView
 	/// <returns>Return PositionXY with Column Line Number (X) and Number Line (y)</returns>
 	public Vector2 ToNumberLine(float column, float line)
 	{
-		
 		line   = Math.Min((line - LayoutRect.y + Padding.y) / FontSizeXY.y,Buffer.TotalLines-1);
 		
 		column = (column - Padding.x) / FontSizeXY.x;
@@ -587,7 +547,6 @@ public class EditorView
 	/// <param name="column">Column.</param>
 	public Vector2 ToPixelLine(Vector2 PositionLine)
 	{
-
 		//Calculate the column position times the font size plus padding spacing;
 		int Column = (int)((FontSizeXY.x  * PositionLine.x)   + Padding.x);
 		int Line   = (int)((FontSizeXY.y  * PositionLine.y+1) + LayoutRect.y - Padding.y);

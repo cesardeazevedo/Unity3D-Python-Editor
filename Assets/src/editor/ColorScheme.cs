@@ -1,13 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// Syntax HighLight Code
 /// </summary>
 public static class ColorScheme  
-{
-	
-			
+{		
 	/// <summary>
 	/// The color of the background.
 	/// </summary>

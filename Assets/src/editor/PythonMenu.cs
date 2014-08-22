@@ -25,7 +25,7 @@ public class PythonMenu : EditorWindow
 	[MenuItem("Python/New Python Script",false,0)]
 	private static void AddComponent()
 	{
-		
+		throw new System.NotImplementedException();
 	}
 	
 	[MenuItem("Python/External Library",false, 1)]
@@ -37,16 +37,14 @@ public class PythonMenu : EditorWindow
 		
 		if(PythonBase.SysPath.Count == 0)
 			PythonBase.SysPath.Add("\\");
-		
 	}
 	
 	[MenuItem("Python/About")]
 	private static void About()
 	{
+		//TODO
 		Title = "About";
-		
 		CreateWindow();
-	
 	}
 	
 	private void OnEnable()
@@ -88,8 +86,7 @@ public class PythonMenu : EditorWindow
 		
 		if(GUI.Button(new Rect(0,Screen.height-45,Screen.width,20), "Add Path")) {
 			PythonBase.SysPath.Add("\\");
-		}
-		
+		}	
 	}
 		
 	/// <summary>

@@ -26,8 +26,7 @@ public class PythonInspector : Editor
 	/// Raises the enable event.
 	/// </summary>
 	private void OnEnable()
-	{
-		
+	{	
 		Target = (PythonBase)target;
 		
 		if(editor == null)
@@ -52,7 +51,6 @@ public class PythonInspector : Editor
 	{	
 		//Disable delegate
 		editor.RepaintAction -= this.Repaint;
-		
 		//Ask for Save file
 		DialogFileSystem();
 	}
@@ -62,12 +60,13 @@ public class PythonInspector : Editor
 	/// </summary>
 	private void SetStyles()
 	{
+		//Style of text
 		FontDrag = new GUIStyle(GUI.skin.box);
 		FontDrag.fontSize  = 16;
 		FontDrag.normal.textColor = Color.white;
 		FontDrag.alignment = TextAnchor.MiddleCenter;
 		FontDrag.hover.background = TextureColor(Color.yellow);	
-		
+		//Style of Tabs
 		ButtonTabs = new GUIStyle(GUI.skin.box);
 		ButtonTabs.fontSize = 16;
 		ButtonTabs.normal.textColor = Color.white;
@@ -225,10 +224,10 @@ public class PythonInspector : Editor
 			case EventType.DragPerform:
 				
 				if(DropArea.Contains(current.mousePosition)) {
-					DragAndDrop.visualMode = DragAndDrop.paths.Length == 0 			? DragAndDropVisualMode.Rejected 
-										 :	 DragAndDrop.paths[0].EndsWith(".py")	? DragAndDropVisualMode.Copy
-										 :	 DragAndDrop.paths[0].EndsWith(".txt")	? DragAndDropVisualMode.Copy
-										 :	 DragAndDropVisualMode.Rejected;					
+					DragAndDrop.visualMode = DragAndDrop.paths.Length == 0          ? DragAndDropVisualMode.Rejected 
+                                         :   DragAndDrop.paths[0].EndsWith(".py")   ? DragAndDropVisualMode.Copy
+                                         :   DragAndDrop.paths[0].EndsWith(".txt")  ? DragAndDropVisualMode.Copy
+                                         :   DragAndDropVisualMode.Rejected;					
 					
 					if(current.type == EventType.DragPerform) {
 						
@@ -250,7 +249,6 @@ public class PythonInspector : Editor
 						DragAndDrop.AcceptDrag();
 						
 						current.Use();	
-						
 					}
 				}
 			break;
@@ -274,14 +272,14 @@ public class PythonInspector : Editor
 		//Limit the width of Tab
 		int width = Math.Min(Screen.width-200, 100 + FileName.Length*9);
 		if(GUILayout.Toggle(Active, FileName, ButtonTabs, GUILayout.Width(width),
-											  			  GUILayout.Height(40)) != Active) {
+                                                          GUILayout.Height(40)) != Active) {
 			
 			SwitchView(PythonBase.Views.Code);
 		}
 		
 		SwitchColors(Target.CurrentView == PythonBase.Views.Interpreter);
 		if(GUILayout.Toggle(Active, "Interpreter", ButtonTabs, GUILayout.Width(170),
-															   GUILayout.Height(40)) != Active) {
+                                                               GUILayout.Height(40)) != Active) {
 
 			SwitchView(PythonBase.Views.Interpreter);
 			editor.Buffer.CurrentLine = string.Empty;
@@ -294,8 +292,7 @@ public class PythonInspector : Editor
 	private void SwitchView(PythonBase.Views view)
 	{
 		editor.Buffer.InterpreterView = editor.InterpreterView 
-									  = view == PythonBase.Views.Interpreter;
-		
+                                      = view == PythonBase.Views.Interpreter;
 		Target.CurrentView = view;
 	}
 	
@@ -305,23 +302,26 @@ public class PythonInspector : Editor
 		ButtonTabs.normal.background = TextureColor(ActiveColor);
 	}
 	
+	/// <summary>
+	/// Spacing of InspectorGUI
+	/// </summary>
 	private void DoSpace()
 	{
 		EditorGUILayout.Space();
 	}
 	
 	/// <summary>
-	/// Textures the color.
+	/// Applies a color to a texture.
 	/// </summary>
 	/// <returns>The color.</returns>
 	/// <param name="color">Color.</param>
 	private static Texture2D TextureColor(Color color)
 	{
-		Texture2D flat = new Texture2D(1, 1);
-		flat.SetPixels(new Color[] { color });
-		flat.Apply();
-		flat.hideFlags = HideFlags.HideAndDontSave;
-		return flat;
+		Texture2D TextureColor = new Texture2D(1, 1);
+		TextureColor.SetPixels(new Color[] { color });
+		TextureColor.Apply();
+		TextureColor.hideFlags = HideFlags.HideAndDontSave;
+		return TextureColor;
 	}
 	
 }

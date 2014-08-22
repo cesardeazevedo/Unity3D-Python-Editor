@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using IronPython.Hosting;
 using IronPython.Modules;
 using Microsoft.Scripting;

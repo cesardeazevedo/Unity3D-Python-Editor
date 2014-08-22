@@ -1,7 +1,6 @@
 ﻿using System.Linq;
-using UnityEditor;
 using UnityEngine;
-using System.Collections;
+using UnityEditor;
 using System.Text.RegularExpressions;
 
 /// <summary>
@@ -9,21 +8,20 @@ using System.Text.RegularExpressions;
 /// </summary>
 public class EditorViewStyles 
 {
+	private GUIStyle background;
+	private GUIStyle font;
+	private GUIStyle backgroundLines;
+	private GUIStyle numberLines;
+	private GUIStyle highLine;
+	private GUIStyle cursor;
+	private GUIStyle interpreter;
 
 	/// <summary>
 	/// Python keywords
 	/// </summary>
 	private static string[] KeyWords = new string[] {"False", "None", "True", "and", "as", "assert", "break", "class", "continue", "def", "del", "elif", 
-													 "else", "except", "finally", "for", "from", "global", "if", "import", "in", "is", "lambda", "nonlocal", 
-													 "not", "or", "pass", "raise", "return", "try", "while", "with", "yield"};
-
-	GUIStyle background;
-	GUIStyle font;
-	GUIStyle backgroundLines;
-	GUIStyle numberLines;
-	GUIStyle highLine;
-	GUIStyle cursor;
-	GUIStyle interpreter;
+                                                     "else", "except", "finally", "for", "from", "global", "if", "import", "in", "is", "lambda", "nonlocal", 
+                                                     "not", "or", "pass", "raise", "return", "try", "while", "with", "yield"};
 	
 	public bool BlockComment, LineComment, IsString = false;
 	
@@ -53,7 +51,6 @@ public class EditorViewStyles
 			
 			return font;
 		}
-		
 	}
 
 	public GUIStyle BackgroundLines {
@@ -67,7 +64,6 @@ public class EditorViewStyles
 			
 			return backgroundLines;
 		}
-		
 	}
 	
 	public GUIStyle NumberLines{
@@ -137,23 +133,21 @@ public class EditorViewStyles
 	/// <param name="IsComment">If set to <c>true</c> comment.</param>
 	public Color32 CheckWordStyle(string word)
 	{
-	
 		LineComment = !LineComment ? word.StartsWith("#") : LineComment;
 
-		return  LineComment 					? ColorScheme.Gray
-				//Block Comment
-		:		BlockCommentStyle(word)			? ColorScheme.Orange
+		return  LineComment                     ? ColorScheme.Gray
+                //Block Comment
+        :       BlockCommentStyle(word)         ? ColorScheme.Orange
 				//Strings
-		:		StringStyle(word)				? ColorScheme.Orange
-				//Keywords
-		:		KeyWords.Contains(word)			? ColorScheme.Pink 
-				//Default
-		:		ColorScheme.White;
-		
+        :       StringStyle(word)               ? ColorScheme.Orange
+                //Keywords
+        :       KeyWords.Contains(word)         ? ColorScheme.Pink 
+                //Default
+        :       ColorScheme.White;	
 	}
 	
 	/// <summary>
-	/// Blocks the comment style.
+	/// Match block of comment e.g.: """ this is a comment in python """
 	/// </summary>
 	/// <returns><c>true</c>, if comment style was blocked, <c>false</c> otherwise.</returns>
 	/// <param name="word">Word.</param>
@@ -176,18 +170,17 @@ public class EditorViewStyles
 			//Reset Quotes
 			triplequotes = string.Empty;
 		
-		
 		return BlockComment;
 	}
 	
 	/// <summary>
-	/// Strings the checker.
+	/// Match a strings quotes e.g.: "this is a string"
 	/// </summary>
 	/// <returns><c>true</c>, if checker was strung, <c>false</c> otherwise.</returns>
 	/// <param name="word">Word.</param>
 	private bool StringStyle(string word)
 	{
-		//Match a literals Quotes Checker.
+		//Match quotes checker.
 		if(Regex.IsMatch(word, "([\"'])") && !BlockComment)
 		{
 			//Check double quotes or single quotes.
@@ -197,14 +190,15 @@ public class EditorViewStyles
 			WhichQuote = string.IsNullOrEmpty(WhichQuote) ? word 
 						: !IsString 					  ? string.Empty 
 						: WhichQuote;
-			
 			return true; 
-			
 		}
 		
 		return IsString;
 	}
 	
+	/// <summary>
+	/// Resets styles on new line
+	/// </summary>
 	public void ResetLineStyles()
 	{
 		IsString     = false;
@@ -226,6 +220,4 @@ public class EditorViewStyles
 		TextureColor.hideFlags = HideFlags.HideAndDontSave;
 		return TextureColor;
 	}
-	
-	
 }

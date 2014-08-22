@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 using System.Linq;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -13,7 +11,6 @@ using System.Text.RegularExpressions;
 [Serializable]
 public class Code : ScriptableObject
 {
-		
 	/// <summary>
 	/// Current Number Line
 	/// </summary>
@@ -39,8 +36,8 @@ public class Code : ScriptableObject
 	/// </summary>
 	public List<List<string>> Lines = new List<List<string>>();
 			
-	public string CodeBuffer 	    = string.Empty;
-	public string CurrentLine 		= string.Empty;
+	public string CodeBuffer        = string.Empty;
+	public string CurrentLine       = string.Empty;
 	public string InterpreterBuffer = string.Empty;
 	
 	public bool InterpreterView;
@@ -51,7 +48,6 @@ public class Code : ScriptableObject
 	/// <param name="obj">Object.</param>
 	public Code Initialize()
 	{
-	
 		this.Lines = new List<List<string>>();
 		this.CurrentLine = string.Empty;
 		this.CodeBuffer  = PythonBase.DefaultCode;
@@ -88,9 +84,9 @@ public class Code : ScriptableObject
 
 		ColumnIndex = GetIndexColumn(this.Column,this.CurrentLine);
 		
-		ColumnIndex =   CurrentLine.Length == 0           ? 	0 
-					: 	ColumnIndex > CurrentLine.Length  ? 	CurrentLine.Length 
-					: 	ColumnIndex;
+		ColumnIndex =   CurrentLine.Length == 0           ?     0 
+                    :   ColumnIndex > CurrentLine.Length  ?     CurrentLine.Length 
+                    :   ColumnIndex;
 	}
 	
 	/// <summary>
@@ -100,7 +96,6 @@ public class Code : ScriptableObject
 	/// <param name="column">Column.</param>
 	public int GetIndexColumn(int column, string line)
 	{
-	
 		if(column == 0)
 			return 0;	
 		
@@ -177,7 +172,6 @@ public class Code : ScriptableObject
 		else
 			Column = GetCharIndex(ColumnIndex) == '\t' ? Column+4 : Column+1;
 				
-		
 		SetColumnIndex();		
 	}
 	
@@ -195,8 +189,7 @@ public class Code : ScriptableObject
 	/// </summary>
 	/// <param name="c">char</param>
 	public void InsertText(char c)
-	{
-				
+	{		
 		string StringJoin = this.CurrentLine;
 			
 		//Insert new Line
@@ -240,7 +233,6 @@ public class Code : ScriptableObject
 
 			Column = c == '\t' ? Column + 4 : ++Column;
 			SetColumnIndex();
-			
 		}
 	}
 	
@@ -250,7 +242,6 @@ public class Code : ScriptableObject
 	/// <param name="c">char</param>
 	public void InsertTextInterpreter(char c)
 	{
-		
  		CurrentLine = CurrentLine.Insert(ColumnIndex,c.ToString());
 		Column = c == '\t' ? Column + 4 : ++Column;
 		SetColumnIndex();
@@ -266,8 +257,7 @@ public class Code : ScriptableObject
 		
 		sb.Insert(0, string.Format("{0}\n>>> {1}\n", output,CurrentLine));
 		InterpreterBuffer = sb.ToString();
-			
-		//HistoryIntepreter.Add(CurrentLine);
+	
 		CurrentLine = string.Empty;
 		SetColumnIndex();
 	}
@@ -277,12 +267,10 @@ public class Code : ScriptableObject
 	/// </summary>
 	public void RemoveText()
 	{
-		
 		if(!ElementInList(Line) && !InterpreterView)
 			return;
 					
 		if(Column > 0) {
-			
 			//Remove single char.
 			GoLeft();
 			string LineTab = CurrentLine;
@@ -291,7 +279,6 @@ public class Code : ScriptableObject
 			UpdateLineText(Line,LineTab);			
 			
 		}else if(!InterpreterView && Line != 1) {
-			
 			//Remove line.
 			Lines[Line-2].Add(CurrentLine);
 				
@@ -308,14 +295,12 @@ public class Code : ScriptableObject
 	/// </summary>
 	public void RemoveRange(int[] range)
 	{
-	
 		CurrentLine = (CurrentLine).Remove(range[0],range[1]-range[0]);
 		
 		UpdateLineText(Line,CurrentLine);
 		
 		Column = range[0] + Regex.Matches(CurrentLine.Substring(0,range[0]),@"(\t)").Count*3;
 		SetColumnIndex();
-		
 	}
 	
 	/// <summary>
@@ -324,8 +309,7 @@ public class Code : ScriptableObject
 	/// <param name="LineNumber">Line number.</param>
 	/// <param name="LineText">Line text.</param>
 	private void UpdateLineText(int NumberLine, string LineText)
-	{
-		
+	{	
 		if(InterpreterView) {
 			CurrentLine = LineText;
 			return;
@@ -340,7 +324,6 @@ public class Code : ScriptableObject
 			Lines[NumberLine-1].Add(results.Value);
 		
 		CurrentLine = LineText;
-		
 	}
 	
 	/// <summary>
@@ -348,7 +331,6 @@ public class Code : ScriptableObject
 	/// </summary>
 	public void SaveCodeToBuffer()
 	{
-		
 		StringBuilder text = new StringBuilder();
 		
 		foreach(List<String> Line in Lines) {	
@@ -378,7 +360,6 @@ public class Code : ScriptableObject
 	/// <param name="NumberLine">Number line.</param>
 	public string GetLine(int NumberLine)
 	{
-		
 		if(!ElementInList(NumberLine))
 			return string.Empty;
 		

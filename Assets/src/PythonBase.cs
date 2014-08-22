@@ -1,24 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-/// <summary>
-/// Model
-/// </summary>
 [System.Serializable]
 public class PythonBase : MonoBehaviour
 {
-
 	/// <summary>
 	/// The path of file
 	/// </summary>	
 	public string FilePath;
 	
+	/// <summary>
+	/// The name of the file.
+	/// </summary>
 	public string FileName = "Untitled.py";
 
 	/// <summary>
 	/// The file created.
 	/// </summary>
-	public bool FileCreated, Saved, InMemory = false;
+	public bool FileCreated, Saved, InMemory;
+	/// <summary>
+	/// Has changes in file
+	/// </summary>
 	public bool HasChanges = true;
 	
 	public enum Views {
@@ -41,27 +43,23 @@ public class PythonBase : MonoBehaviour
 	/// </summary>
 	public static string DefaultCode = "import UnityEngine as unity\n\ndef Start():\n\tpass\n\ndef Update():\n\tpass";
 	
-		
 	/// <summary>
 	/// Reset this instance.
 	/// </summary>
 	public void Reset()
 	{
 		FilePath = string.Empty;
-		FileCreated = false;
 		Saved = false;
-		HasChanges = true;
+		HasChanges  = true;
+		FileCreated = false;		
 		FileName = "Untitled.py";
-		
 	}
 	
 	void Update() 
 	{
-		Debug.Log("Update");
+		
 	}
-					
-	#region Context Options TODO
-	
+						
 	[ContextMenu("Cursor Block")]
 	private void Menu()
 	{
@@ -72,8 +70,5 @@ public class PythonBase : MonoBehaviour
 	private void Menu2()
 	{
 		Debug.Log("CursorBlock");
-	}
-	
-	#endregion 
-	
+	}	
 }

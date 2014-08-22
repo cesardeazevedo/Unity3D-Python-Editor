@@ -38,11 +38,6 @@ public class Interpreter
 	/// The operation.
 	/// </summary>
 	private ObjectOperations Operation;
-	
-	/// <summary>
-	/// The exceptions.
-	/// </summary>
-	private string Exceptions;
 		
 	/// <summary>
 	/// The python class.
@@ -56,8 +51,7 @@ public class Interpreter
 	{
 		Engine = Python.CreateEngine();  
 		Scope  = Engine.CreateScope();
-		SetLibrary();
-		
+		SetLibrary();	
 	}
 	
 	/// <summary>
@@ -85,22 +79,18 @@ public class Interpreter
 		ErrorHandle errors = new ErrorHandle();
 		
 		MemoryStream stream = new MemoryStream();
+		//Set IO Ouput of execution
 		Engine.Runtime.IO.SetOutput(stream, new StreamWriter(stream));
 		
 		Compiled  = Source.Compile(errors);
-		
 		Operation = Engine.CreateOperations();
 			
 		try {
-
 			Compiled.Execute(Scope);
-			
 			return FormatOutput(ReadFromStream(stream));
-				
-		}catch(Exception ex) {
-		
-			Exceptions = Engine.GetService<ExceptionOperations>().FormatException(ex);
-			return Exceptions;
+			
+		} catch(Exception ex) {
+			return Engine.GetService<ExceptionOperations>().FormatException(ex);
 		}
 	}
 	
@@ -111,11 +101,10 @@ public class Interpreter
 	/// <param name="output">Output.</param>
 	private string FormatOutput(string output)
 	{
-		
 		return string.IsNullOrEmpty(output) ? string.Empty 
-		:	   string.Join("\n", output.Remove(output.Length-1)
-									   .Split('\n')
-								 	   .Reverse().ToArray());
+		:      string.Join("\n", output.Remove(output.Length-1)
+                                       .Split('\n')
+                                       .Reverse().ToArray());
 	}
 	
 	/// <summary>
@@ -126,9 +115,7 @@ public class Interpreter
 	private string ReadFromStream(MemoryStream ms) {
 		
 		int length = (int)ms.Length;
-		
 		Byte[] bytes = new Byte[ms.Length];
-		
 		ms.Seek(0, SeekOrigin.Begin);
 		ms.Read(bytes, 0, length);
 		
@@ -169,12 +156,7 @@ public class Interpreter
 	{
 		Engine.Runtime.LoadAssembly(type.Assembly);
 	}
-	
-	public string GetException()
-	{
-		return Exceptions;
-	}
-		
+			
 	/// <summary>
 	/// Gets the variable.
 	/// </summary>

@@ -103,8 +103,8 @@ public class Interpreter
 	{
 		return string.IsNullOrEmpty(output) ? string.Empty 
 		:      string.Join("\n", output.Remove(output.Length-1)
-                                       .Split('\n')
-                                       .Reverse().ToArray());
+                                               .Split('\n')
+                                               .Reverse().ToArray());
 	}
 	
 	/// <summary>

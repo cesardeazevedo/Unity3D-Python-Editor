@@ -136,14 +136,14 @@ public class EditorViewStyles
         LineComment = !LineComment ? word.StartsWith("#") : LineComment;
 
         return  LineComment                     ? ColorScheme.Gray
-            //Block Comment
-            :       BlockCommentStyle(word)         ? ColorScheme.Orange
-            //Strings
-            :       StringStyle(word)               ? ColorScheme.Orange
-            //Keywords
-            :       KeyWords.Contains(word)         ? ColorScheme.Pink 
-            //Default
-            :       ColorScheme.White;  
+                //Block Comment
+        :       BlockCommentStyle(word)         ? ColorScheme.Orange
+                //Strings
+        :       StringStyle(word)               ? ColorScheme.Orange
+                //Keywords
+        :       KeyWords.Contains(word)         ? ColorScheme.Pink 
+                //Default
+        :       ColorScheme.White;  
     }
 
     /// <summary>
@@ -188,8 +188,8 @@ public class EditorViewStyles
 
             //Check if close with the first quotes.  
             WhichQuote = string.IsNullOrEmpty(WhichQuote) ? word 
-                : !IsString                       ? string.Empty 
-                : WhichQuote;
+            : !IsString                                   ? string.Empty 
+            : WhichQuote;
             return true; 
         }
 

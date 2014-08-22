@@ -1,0 +1,68 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{1ACF2B40-B807-1C8A-6CFA-EEB7B4589130}") = "UnityPythonEditor", "Assembly-CSharp.csproj", "{B33244A4-2D10-1B6F-6207-004DA520B468}"
+EndProject
+Project("{1ACF2B40-B807-1C8A-6CFA-EEB7B4589130}") = "UnityPythonEditor", "Assembly-CSharp-Editor.csproj", "{597187BF-D22E-7003-549C-49105CB0528B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B33244A4-2D10-1B6F-6207-004DA520B468}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B33244A4-2D10-1B6F-6207-004DA520B468}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B33244A4-2D10-1B6F-6207-004DA520B468}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B33244A4-2D10-1B6F-6207-004DA520B468}.Release|Any CPU.Build.0 = Release|Any CPU
+		{597187BF-D22E-7003-549C-49105CB0528B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{597187BF-D22E-7003-549C-49105CB0528B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{597187BF-D22E-7003-549C-49105CB0528B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{597187BF-D22E-7003-549C-49105CB0528B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+																																																																																																																																																												GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 120
+		$1.TabsToSpaces = False
+		$1.EolMarker = Unix
+		$1.inheritsSet = VisualStudio
+		$1.inheritsScope = text/plain
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.IndentSwitchBody = True
+		$2.BeforeMethodDeclarationParentheses = False
+		$2.BeforeMethodCallParentheses = False
+		$2.BeforeConstructorDeclarationParentheses = False
+		$2.BeforeIndexerDeclarationBracket = False
+		$2.BeforeDelegateDeclarationParentheses = False
+		$2.NewParentheses = False
+		$2.IfParentheses = False
+		$2.WhileParentheses = False
+		$2.ForParentheses = False
+		$2.ForeachParentheses = False
+		$2.CatchParentheses = False
+		$2.SwitchParentheses = False
+		$2.LockParentheses = False
+		$2.UsingParentheses = False
+		$2.SpacesBeforeBrackets = False
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+		$0.TextStylePolicy = $3
+		$3.FileWidth = 120
+		$3.TabWidth = 4
+		$3.EolMarker = Unix
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/plain
+		$3.scope = text/plain
+		$0.DotNetNamingPolicy = $4
+		$4.DirectoryNamespaceAssociation = None
+		$4.ResourceNamePolicy = FileFormatDefault
+	EndGlobalSection
+
+EndGlobal

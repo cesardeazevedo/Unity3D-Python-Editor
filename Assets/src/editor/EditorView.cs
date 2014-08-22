@@ -176,7 +176,6 @@ public class EditorView
 			
 			if(Buffer.CodeBuffer == string.Empty)
 				Buffer.Lines.Add(new List<string>());	
-			
 		}
 		
 		Buffer.TotalLines = 1;

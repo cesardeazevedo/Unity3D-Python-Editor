@@ -84,9 +84,9 @@ public class Code : ScriptableObject
 
 		ColumnIndex = GetIndexColumn(this.Column,this.CurrentLine);
 		
-		ColumnIndex =   CurrentLine.Length == 0           ?     0 
-                    :   ColumnIndex > CurrentLine.Length  ?     CurrentLine.Length 
-                    :   ColumnIndex;
+		ColumnIndex =   CurrentLine.Length == 0    ?     0 
+                :       ColumnIndex > CurrentLine.Length   ?     CurrentLine.Length 
+                :       ColumnIndex;
 	}
 	
 	/// <summary>
@@ -105,7 +105,6 @@ public class Code : ScriptableObject
 			index = line[i] == '\t' ? index+4 : index+1;			
 			if(index >= column)
 				return ++i;
-			
 		}
 		
 		return 0;

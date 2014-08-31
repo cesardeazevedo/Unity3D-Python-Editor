@@ -16,11 +16,13 @@ public class PythonInspector : Editor
     [SerializeField]
     private PythonBase Target;
 
-    public EditorView editor;
-
     private Interpreter python;
 
+    public EditorView editor;
+
     private GUIStyle FontDrag, ButtonTabs;
+
+    private int ColorSkinPro = 0;
 
     /// <summary>
     /// Raises the enable event.
@@ -41,6 +43,8 @@ public class PythonInspector : Editor
         SwitchView(Target.CurrentView);
 
         LoadEditorPrefs();
+
+        ColorSkinPro = !EditorGUIUtility.isProSkin ? 0 : 255;
 
     }
 
@@ -63,7 +67,7 @@ public class PythonInspector : Editor
         //Style of text
         FontDrag = new GUIStyle(GUI.skin.box);
         FontDrag.fontSize  = 16;
-        FontDrag.normal.textColor = Color.white;
+        FontDrag.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
         FontDrag.alignment = TextAnchor.MiddleCenter;
         FontDrag.hover.background = TextureColor(Color.yellow); 
         //Style of Tabs
@@ -71,7 +75,9 @@ public class PythonInspector : Editor
         ButtonTabs.fontSize = 16;
         ButtonTabs.normal.textColor = Color.white;
         ButtonTabs.alignment = TextAnchor.MiddleCenter;
-        ButtonTabs.normal.background = TextureColor(new Color(0,0,0,0.1f));
+
+        Color ColorTabs = new Color(ColorSkinPro,ColorSkinPro,ColorSkinPro,0.9f);
+        ButtonTabs.normal.background = TextureColor(ColorTabs);
     }
 
     /// <summary>
@@ -298,7 +304,9 @@ public class PythonInspector : Editor
 
     private void SwitchColors(bool view)
     {
-        Color ActiveColor = view ? new Color(255,255,255,0.25f) : new Color(0,0,0,0.1f);
+        Color ActiveColor = view ? new Color(ColorSkinPro,ColorSkinPro,ColorSkinPro,0.35f) : 
+                                   new Color(ColorSkinPro,ColorSkinPro,ColorSkinPro,0.50f);
+
         ButtonTabs.normal.background = TextureColor(ActiveColor);
     }
 

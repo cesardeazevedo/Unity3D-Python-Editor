@@ -2,8 +2,11 @@
 
 
 class Cube():
-	def Start():
-		pass
+    def Start():
+        pass
 
-	def Update():
-		pass
+    def Update():
+        pass
+        
+    def Test():
+        pass

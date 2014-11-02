@@ -21,7 +21,7 @@ public class EditorView
     private Vector2 PositionScroll = Vector2.zero;
 
     [SerializeField]
-    private Vector2 Padding    = new Vector2(44, 15);   
+    private Vector2 Padding    = new Vector2(44, 15);
 
     [SerializeField]
     private Vector2 FontSizeXY = new Vector2(9, 19);
@@ -92,9 +92,9 @@ public class EditorView
     /// Editors the view controll.
     /// </summary>
     public void EditorViewGUI(bool IsInterpreter)
-    {   
-        //Get box rect and background               
-        GetBoxRect();   
+    {
+        //Get box rect and background
+        GetBoxRect();
         //Begin ScrollView of box
         PositionScroll = GUI.BeginScrollView(new Rect(0, LayoutRect.y, LayoutRect.width + 15, LayoutRect.height),   
                 PositionScroll, new Rect(0, LayoutRect.yMin, 800, 23 * Buffer.TotalLines));         
@@ -103,9 +103,9 @@ public class EditorView
         //Draw Cursor for text
         Cursor();
         //HighLight Current Line.
-        HighlighLine();     
+        HighlighLine();
         //HightLigh Selection Text
-        HighlighSelected();     
+        HighlighSelected();
 
         GUI.EndScrollView();
 
@@ -163,7 +163,7 @@ public class EditorView
 
                 while((line = readerLine.ReadLine()) != null) {
 
-                    List<string> words = new List<string>();    
+                    List<string> words = new List<string>();
 
                     Regex pattern = new Regex(MatchCode);
 
@@ -175,7 +175,7 @@ public class EditorView
             }
 
             if(Buffer.CodeBuffer == string.Empty)
-                Buffer.Lines.Add(new List<string>());   
+                Buffer.Lines.Add(new List<string>());
         }
 
         Buffer.TotalLines = 1;
@@ -252,7 +252,7 @@ public class EditorView
 
         //Separate line
         GUI.Box(new Rect(0, Bottom-7, Screen.width , 1), GUIContent.none, Style.BackgroundLines);
-        GUI.Label(Pointer,">>>", Style.Interpreter);            
+        GUI.Label(Pointer, Buffer.BlockInspector ? "..." : ">>>", Style.Interpreter);
     }
 
     public void InitializeInterpreter()
@@ -371,7 +371,7 @@ public class EditorView
                         //word width
                         width = index == Buffer.Column ? word.Length : 0;
 
-                        index = width == 0 ? index+1 : index;                   
+                        index = width == 0 ? index+1 : index;
                     }
             }
 
@@ -435,7 +435,7 @@ public class EditorView
                 case KeyCode.KeypadEnter:
 
                     if(InterpreterView) {
-                        ExecuteInterpreter();   
+                        ExecuteInterpreter();
                         return;
                     }
                     break;
@@ -475,23 +475,48 @@ public class EditorView
                         Buffer.InsertTextInterpreter(c);
 
                     SetChanges();
-                    break;  
+                    break;
 
             }
 
             e.Use();
         }
-
     }
 
     /// <summary>
     /// Executes the interpreter.
     /// </summary>
     private void ExecuteInterpreter()
-    {   
-        string output = PythonMachine.Compile(Buffer.CurrentLine);
+    {
+        string line = Buffer.CurrentLine.TrimEnd();
+        // Append and return if is a block code
+        if(!String.IsNullOrEmpty(line) &&
+           line.Substring(line.Length-1, 1) == ":" && !Buffer.BlockInspector) {
+            Buffer.InterpreterBlock = line;
+            Buffer.AppendInterpreter("");
+            Buffer.BlockInspector = true;
+            return;
+        }
+        if(!Buffer.BlockInspector) {
+            //Executes a single line
+            string output = PythonMachine.Compile(Buffer.CurrentLine);
+            Buffer.AppendInterpreter(output);
 
-        Buffer.AppendInterpreter(output);
+        }else {
+            //Block Code (eg.: if 5 < 10:    )
+            if(string.IsNullOrEmpty(line)) {
+                //Execute block when enter a blank line
+                string output = PythonMachine.Compile(Buffer.InterpreterBlock);
+                Buffer.AppendInterpreter(output);
+                //Empties current block
+                Buffer.InterpreterBlock = string.Empty;
+                Buffer.BlockInspector = false;
+            }else {
+                //stores current block code.
+                Buffer.InterpreterBlock += "\n" + line;
+                Buffer.AppendInterpreter("");
+            }
+        }
     }
 
     /// <summary>
@@ -535,7 +560,7 @@ public class EditorView
 
         line = line == 0 ? 1 : line;
 
-        return new Vector2(column,line);    
+        return new Vector2(column,line);
     }
 
     /// <summary>

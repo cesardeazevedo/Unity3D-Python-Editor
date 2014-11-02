@@ -39,8 +39,10 @@ public class Code : ScriptableObject
     public string CodeBuffer        = string.Empty;
     public string CurrentLine       = string.Empty;
     public string InterpreterBuffer = string.Empty;
+    public string InterpreterBlock  = string.Empty;
 
     public bool InterpreterView;
+    public bool BlockInspector;
 
     /// <summary>
     /// Initialize.
@@ -102,7 +104,7 @@ public class Code : ScriptableObject
         int index = 0;
         for(int i = 0; i <= line.Length; i++) {
 
-            index = line[i] == '\t' ? index+4 : index+1;            
+            index = line[i] == '\t' ? index+4 : index+1;
             if(index >= column)
                 return ++i;
         }
@@ -252,11 +254,12 @@ public class Code : ScriptableObject
     /// <param name="output">Output string</param>
     public void AppendInterpreter(string output)
     {
-        StringBuilder sb = new StringBuilder(InterpreterBuffer);
+        StringBuilder sb = new StringBuilder("\n"+InterpreterBuffer);
+        string blockSeparator = this.BlockInspector ? "..." : ">>> ";
+        string BreakLine      = String.IsNullOrEmpty(output) ? "" : "\n";
+        sb.Insert(0, output + BreakLine + blockSeparator + CurrentLine);
 
-        sb.Insert(0, string.Format("{0}\n>>> {1}\n", output,CurrentLine));
         InterpreterBuffer = sb.ToString();
-
         CurrentLine = string.Empty;
         SetColumnIndex();
     }

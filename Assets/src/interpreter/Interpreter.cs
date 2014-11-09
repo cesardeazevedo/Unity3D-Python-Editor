@@ -9,16 +9,17 @@ using IronPython.Modules;
 using System.Collections.Generic;
 using Microsoft.Scripting.Hosting;
 
+
 /// <summary>
 /// Interpreter for IronPython.
 /// </summary>
-public class Interpreter 
+public class Interpreter
 {
     /// <summary>
     /// The scope.
     /// </summary>
     private ScriptScope  Scope;
-
+ 
     /// <summary>
     /// The engine.
     /// </summary>
@@ -49,16 +50,16 @@ public class Interpreter
     /// </summary>
     public Interpreter()
     {
-        Engine = Python.CreateEngine();  
+        Engine = Python.CreateEngine();
         Scope  = Engine.CreateScope();
-        SetLibrary();   
+        SetLibrary();
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Interpreter"/> class.
     /// </summary>
     /// <param name="source">Source.</param>
-    public Interpreter(string src) : this() 
+    public Interpreter(string src) : this()
     {
         Compile(src);
     }
@@ -67,14 +68,15 @@ public class Interpreter
     /// Compile the specified src.
     /// </summary>
     /// <param name="src">Source.</param>
-    public string Compile(string src)
+    public string Compile(string src, Microsoft.Scripting.SourceCodeKind CodeKind =
+                                      Microsoft.Scripting.SourceCodeKind.SingleStatement)
     {
         if(src == string.Empty)
             return string.Empty;
 
         LoadRuntime();
 
-        Source = Engine.CreateScriptSourceFromString(src, Microsoft.Scripting.SourceCodeKind.SingleStatement);  
+        Source = Engine.CreateScriptSourceFromString(src, CodeKind);
 
         ErrorHandle errors = new ErrorHandle();
 
@@ -145,6 +147,7 @@ public class Interpreter
     private void LoadRuntime()
     {
         Engine.Runtime.LoadAssembly(typeof(GameObject).Assembly);   
+        // Engine.Runtime.LoadAssembly(typeof(Ironclad.PythonApi).Assembly);
     }
 
     public void AddRuntime<T>()

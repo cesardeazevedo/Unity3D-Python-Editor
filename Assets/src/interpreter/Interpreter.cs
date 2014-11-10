@@ -149,8 +149,7 @@ public class Interpreter
     /// </summary>
     private void LoadRuntime()
     {
-        Engine.Runtime.LoadAssembly(typeof(GameObject).Assembly);   
-        // Engine.Runtime.LoadAssembly(typeof(Ironclad.PythonApi).Assembly);
+        Engine.Runtime.LoadAssembly(typeof(GameObject).Assembly);
     }
 
     public void AddRuntime<T>()
@@ -164,7 +163,7 @@ public class Interpreter
     }
 
     /// <summary>
-    /// Gets the variable.
+    /// Gets the variable or class
     /// </summary>
     /// <returns>The variable.</returns>
     /// <param name="name">Name.</param>
@@ -174,23 +173,16 @@ public class Interpreter
     }
 
     /// <summary>
-    /// Initializes the class.
-    /// </summary>
-    /// <returns>The class.</returns>
-    /// <param name="nameClass">Name class.</param>
-    public object InitializeClass(object nameClass)
-    {
-        return Operation.Invoke(nameClass);
-    }
-
-    /// <summary>
     /// Calls the method.
     /// </summary>
     /// <param name="name">Name.</param>
     public void InvokeMethod(object nameClass, string Method, params object[] parameters)
     {
-        object Func = Operation.GetMember(nameClass, Method);
-        Operation.Invoke(Func,parameters);
+        object output = new object();
+        if(Operation.TryGetMember(nameClass, Method, out output)) {
+            object Func = Operation.GetMember(nameClass, Method);
+            Operation.Invoke(Func, parameters);
+        }
     }
 
 }

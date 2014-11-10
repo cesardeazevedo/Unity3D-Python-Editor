@@ -28,7 +28,7 @@ public class PythonInspector : Editor
     /// Raises the enable event.
     /// </summary>
     private void OnEnable()
-    {   
+    {
         Target = (PythonBase)target;
 
         if(editor == null)
@@ -52,7 +52,7 @@ public class PythonInspector : Editor
     /// Raises the disable event.
     /// </summary>
     private void OnDisable()
-    {   
+    {
         //Disable delegate
         editor.RepaintAction -= this.Repaint;
         //Ask for Save file
@@ -153,12 +153,25 @@ public class PythonInspector : Editor
     /// </summary>
     private void SaveCodeToFile()
     {
-        File.WriteAllText(Target.FilePath,editor.Buffer.CodeBuffer, Encoding.UTF8);     
+        File.WriteAllText(Target.FilePath,editor.Buffer.CodeBuffer, Encoding.UTF8);
         Target.Saved      = true;
         Target.InMemory   = false;
         Target.HasChanges = false;
         //Remove from memory
         EditorDataBase.Instance.RemoveInstance(Target.GetInstanceID());
+    }
+
+    /// <summary>
+    // "Compile" on save file
+    /// </summary>
+    private void CompileOnSave()
+    {
+        python = new Interpreter();
+        string Response = python.Compile(Target.FilePath, Microsoft.Scripting.SourceCodeKind.Statements);
+
+        //Display if returned something, error, print, etc.
+        if(!String.IsNullOrEmpty(Response))
+            Debug.Log(Response);
     }
 
     /// <summary>
@@ -176,7 +189,7 @@ public class PythonInspector : Editor
     private void LoadEditorPrefs()
     {
 
-        string Paths = EditorPrefs.HasKey("SysPath") ? 
+        string Paths = EditorPrefs.HasKey("SysPath") ?
             EditorPrefs.GetString("SysPath") : "\\";
 
         PythonBase.SysPath = Paths.Split('\n').ToList();
@@ -204,7 +217,7 @@ public class PythonInspector : Editor
 
         editor.EditorViewGUI(Target.CurrentView == PythonBase.Views.Interpreter);
 
-        if(GUILayout.Button("Save")) {
+        if(GUILayout.Button("Save and Compile")) {
 
             Target.Saved = true;
             Target.HasChanges = false;
@@ -213,6 +226,8 @@ public class PythonInspector : Editor
                 SaveFileLocation();
             else
                 SaveCodeToFile();
+
+            CompileOnSave();
         }
     }
 
@@ -233,7 +248,7 @@ public class PythonInspector : Editor
                     DragAndDrop.visualMode = DragAndDrop.paths.Length == 0   ? DragAndDropVisualMode.Rejected 
                         :   DragAndDrop.paths[0].EndsWith(".py")             ? DragAndDropVisualMode.Copy
                         :   DragAndDrop.paths[0].EndsWith(".txt")            ? DragAndDropVisualMode.Copy
-                        :   DragAndDropVisualMode.Rejected;                 
+                        :   DragAndDropVisualMode.Rejected;
 
                     if(current.type == EventType.DragPerform) {
 
@@ -245,8 +260,8 @@ public class PythonInspector : Editor
 
                         editor.Buffer.Initialize();
 
-                        string test = file.ReadToEnd();
-                        editor.Buffer.CodeBuffer = test == "" ? " " : test;
+                        string LocalBuffer = file.ReadToEnd();
+                        editor.Buffer.CodeBuffer = LocalBuffer == "" ? " " : LocalBuffer;
 
                         Target.FileCreated = true;
 
@@ -254,7 +269,7 @@ public class PythonInspector : Editor
 
                         DragAndDrop.AcceptDrag();
 
-                        current.Use();  
+                        current.Use();
                     }
                 }
                 break;
@@ -297,14 +312,14 @@ public class PythonInspector : Editor
 
     private void SwitchView(PythonBase.Views view)
     {
-        editor.Buffer.InterpreterView = editor.InterpreterView 
-            = view == PythonBase.Views.Interpreter;
+        editor.Buffer.InterpreterView = editor.InterpreterView
+                                      = (view == PythonBase.Views.Interpreter);
         Target.CurrentView = view;
     }
 
     private void SwitchColors(bool view)
     {
-        Color ActiveColor = view ? new Color(ColorSkinPro,ColorSkinPro,ColorSkinPro,0.35f) : 
+        Color ActiveColor = view ? new Color(ColorSkinPro,ColorSkinPro,ColorSkinPro,0.35f) :
                                    new Color(ColorSkinPro,ColorSkinPro,ColorSkinPro,0.50f);
 
         ButtonTabs.normal.background = TextureColor(ActiveColor);

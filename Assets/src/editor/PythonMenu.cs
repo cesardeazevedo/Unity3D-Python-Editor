@@ -25,7 +25,11 @@ public class PythonMenu : EditorWindow
     [MenuItem("Python/New Python Script",false,0)]
     private static void AddComponent()
     {
-        throw new System.NotImplementedException();
+        GameObject Selected = Selection.activeTransform.gameObject;
+        if(Selected.GetComponent<PythonBase>() == null)
+            Selected.AddComponent<PythonBase>();
+        else
+            Debug.LogWarning("Python script already added");
     }
 
     [MenuItem("Python/External Library",false, 1)]
@@ -33,7 +37,7 @@ public class PythonMenu : EditorWindow
     {
         Title = "Locate Library";
 
-        CreateWindow(new Rect(Screen.width, Screen.height/2,600,200));
+        CreateWindow();
 
         if(PythonBase.SysPath.Count == 0)
             PythonBase.SysPath.Add("\\");

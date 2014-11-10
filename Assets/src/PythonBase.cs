@@ -41,7 +41,12 @@ public class PythonBase : MonoBehaviour
     /// <summary>
     /// The default code.
     /// </summary>
-    public static string DefaultCode = "import UnityEngine as unity\n\ndef Start():\n\tpass\n\ndef Update():\n\tpass";
+    public static string DefaultCode = "import UnityEngine as unity\n\n"+
+                                       "class Untitled(): \n\n"+
+                                       "def Start(self, this):\n"+
+                                       "\tpass\n\n"+
+                                       "def Update(self, this):\n"+
+                                       "\tpass";
 
     /// <summary>
     /// Reset this instance.
@@ -51,24 +56,20 @@ public class PythonBase : MonoBehaviour
         FilePath = string.Empty;
         Saved = false;
         HasChanges  = true;
-        FileCreated = false;        
+        FileCreated = false;
         FileName = "Untitled.py";
     }
 
-    void Update() 
-    {
-
-    }
-
+    //TODO:
     [ContextMenu("Cursor Block")]
     private void Menu()
     {
         Debug.Log("CursorBlock");
     }
-
+    //TODO:
     [ContextMenu("Vertical Bar")]
     private void Menu2()
     {
         Debug.Log("CursorBlock");
-    }   
+    }
 }

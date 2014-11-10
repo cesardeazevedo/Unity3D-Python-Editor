@@ -43,10 +43,10 @@ public class PythonBase : MonoBehaviour
     /// </summary>
     public static string DefaultCode = "import UnityEngine as unity\n\n"+
                                        "class Untitled(): \n\n"+
-                                       "def Start(self, this):\n"+
-                                       "\tpass\n\n"+
-                                       "def Update(self, this):\n"+
-                                       "\tpass";
+                                       "\tdef Start(self, this):\n"+
+                                       "\t\tpass\n\n"+
+                                       "\tdef Update(self, this):\n"+
+                                       "\t\tpass";
 
     /// <summary>
     /// Reset this instance.

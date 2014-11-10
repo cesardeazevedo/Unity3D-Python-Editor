@@ -76,7 +76,10 @@ public class Interpreter
 
         LoadRuntime();
 
-        Source = Engine.CreateScriptSourceFromString(src, CodeKind);
+
+        Source = CodeKind == Microsoft.Scripting.SourceCodeKind.SingleStatement ?
+                             Engine.CreateScriptSourceFromString(src, CodeKind) :
+                             Engine.CreateScriptSourceFromFile(src);
 
         ErrorHandle errors = new ErrorHandle();
 

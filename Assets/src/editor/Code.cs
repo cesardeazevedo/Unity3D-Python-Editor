@@ -104,9 +104,11 @@ public class Code : ScriptableObject
         int index = 0;
         for(int i = 0; i <= line.Length; i++) {
 
-            index = line[i] == '\t' ? index+4 : index+1;
-            if(index >= column)
-                return ++i;
+			if(line.Length > 0) {
+                index = line[i] == '\t' ? index+4 : index+1;
+                if(index >= column)
+                    return ++i;
+			}
         }
 
         return 0;

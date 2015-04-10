@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{B33244A4-2D10-1B6F-6207-004DA520B468}</ProjectGuid>
+	<ProjectGuid>{FFA2EB7D-7BE4-8217-2AB1-0DFCC5C28F2A}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -19,7 +19,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_4_6_0;UNITY_4_6;UNITY_ANDROID;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;UNITY_ANDROID_API;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_OSX</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_5_0_0;UNITY_5_0;UNITY_5;ENABLE_LICENSE_RENAME;ENABLE_NEW_BUGREPORTER;ENABLE_2D_PHYSICS;ENABLE_4_6_FEATURES;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_NEW_HIERARCHY;ENABLE_PHYSICS;ENABLE_PHYSICS_PHYSX3;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_AUDIOMIXER_SUSPEND;ENABLE_NONPRO;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;UNITY_STANDALONE_OSX;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_GAMECENTER;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_MONO;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_OSX</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
 	<NoWarn>0169</NoWarn>
@@ -46,32 +46,33 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\src\PyEventLinker.cs" />
      <Compile Include="Assets\src\PythonBase.cs" />
      <Compile Include="Assets\src\interpreter\ErrorHandle.cs" />
      <Compile Include="Assets\src\interpreter\Interpreter.cs" />
  <Reference Include="UnityEngine.UI">
- <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/4.6.0/UnityEngine.UI.dll</HintPath>
+ <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="IronPython">
- <HintPath>/Users/cesaraugustodiasdeazevedi/UnityPythonEditor/Assets/dll/IronPython.dll</HintPath>
+ <HintPath>/Users/iCesar/Develop/Unity/Unity3D-Python-Editor/Assets/dll/IronPython.dll</HintPath>
  </Reference>
  <Reference Include="IronPython.Modules">
- <HintPath>/Users/cesaraugustodiasdeazevedi/UnityPythonEditor/Assets/dll/IronPython.Modules.dll</HintPath>
+ <HintPath>/Users/iCesar/Develop/Unity/Unity3D-Python-Editor/Assets/dll/IronPython.Modules.dll</HintPath>
  </Reference>
  <Reference Include="IronPython.SQLite">
- <HintPath>/Users/cesaraugustodiasdeazevedi/UnityPythonEditor/Assets/dll/IronPython.SQLite.dll</HintPath>
+ <HintPath>/Users/iCesar/Develop/Unity/Unity3D-Python-Editor/Assets/dll/IronPython.SQLite.dll</HintPath>
  </Reference>
  <Reference Include="Microsoft.Dynamic">
- <HintPath>/Users/cesaraugustodiasdeazevedi/UnityPythonEditor/Assets/dll/Microsoft.Dynamic.dll</HintPath>
+ <HintPath>/Users/iCesar/Develop/Unity/Unity3D-Python-Editor/Assets/dll/Microsoft.Dynamic.dll</HintPath>
  </Reference>
  <Reference Include="Microsoft.Scripting.AspNet">
- <HintPath>/Users/cesaraugustodiasdeazevedi/UnityPythonEditor/Assets/dll/Microsoft.Scripting.AspNet.dll</HintPath>
+ <HintPath>/Users/iCesar/Develop/Unity/Unity3D-Python-Editor/Assets/dll/Microsoft.Scripting.AspNet.dll</HintPath>
  </Reference>
  <Reference Include="Microsoft.Scripting.Core">
- <HintPath>/Users/cesaraugustodiasdeazevedi/UnityPythonEditor/Assets/dll/Microsoft.Scripting.Core.dll</HintPath>
+ <HintPath>/Users/iCesar/Develop/Unity/Unity3D-Python-Editor/Assets/dll/Microsoft.Scripting.Core.dll</HintPath>
  </Reference>
  <Reference Include="Microsoft.Scripting">
- <HintPath>/Users/cesaraugustodiasdeazevedi/UnityPythonEditor/Assets/dll/Microsoft.Scripting.dll</HintPath>
+ <HintPath>/Users/iCesar/Develop/Unity/Unity3D-Python-Editor/Assets/dll/Microsoft.Scripting.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -25,11 +25,11 @@ public class PythonMenu : EditorWindow
     [MenuItem("Python/New Python Script",false,0)]
     private static void AddComponent()
     {
-        GameObject Selected = Selection.activeTransform.gameObject;
-        if(Selected.GetComponent<PythonBase>() == null)
+		if(Selection.activeGameObject != null) {
+            GameObject Selected = Selection.activeTransform.gameObject;
             Selected.AddComponent<PythonBase>();
-        else
-            Debug.LogWarning("Python script already added");
+		} else 
+			EditorUtility.DisplayDialog("Missing GameObject", "Please, Select a GameObject", "OK");
     }
 
     [MenuItem("Python/External Library",false, 1)]

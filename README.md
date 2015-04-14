@@ -22,4 +22,4 @@ Python interface based on IronPython for Unity3D with sweet editor for inspector
 
 
 ##LICENSE
-MIT
+[MIT](./LICENSE)

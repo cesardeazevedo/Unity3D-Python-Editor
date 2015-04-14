@@ -13,7 +13,7 @@ Python interface based on IronPython for Unity3D with sweet editor for inspector
 
 
 ##Editor
-![ScreenShot](http://i.cubeupload.com/o6dkYN.png)
+![ScreenShot](http://i.cubeupload.com/f9VN8B.png)
 
 ##Interpreter
 ![ScreenShot](http://i.cubeupload.com/gFjViz.png)

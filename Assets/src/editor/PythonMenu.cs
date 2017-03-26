@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
 /// <summary>
 /// Python menu.
@@ -27,7 +26,7 @@ public class PythonMenu : EditorWindow
     {
 		if(Selection.activeGameObject != null) {
             GameObject Selected = Selection.activeTransform.gameObject;
-            Selected.AddComponent<PythonBase>();
+            Selected.AddComponent<PythonScript>();
 		} else 
 			EditorUtility.DisplayDialog("Missing GameObject", "Please, Select a GameObject", "OK");
     }
@@ -39,26 +38,17 @@ public class PythonMenu : EditorWindow
 
         CreateWindow();
 
-        if(PythonBase.SysPath.Count == 0)
-            PythonBase.SysPath.Add("\\");
-    }
-
-    [MenuItem("Python/About")]
-    private static void About()
-    {
-        //TODO
-        Title = "About";
-        CreateWindow();
+        if(PythonScript.SysPath.Count == 0)
+            PythonScript.SysPath.Add("\\");
     }
 
     private void OnEnable()
     {
-        title = Title;
+        titleContent.text = Title;
     }
 
     private void OnGUI()
     {
-
         SysPathStyle = new GUIStyle(GUI.skin.textField);
 
         EditorGUILayout.Space();
@@ -67,20 +57,20 @@ public class PythonMenu : EditorWindow
         EditorGUILayout.BeginHorizontal();
 
         int top = 5;
-        for (int i = 0; i < PythonBase.SysPath.Count; i++) {
+        for (int i = 0; i < PythonScript.SysPath.Count; i++) {
 
-            GUI.Label(new Rect(5,top,Screen.width-180,20),PythonBase.SysPath[i], SysPathStyle);
+            GUI.Label(new Rect(5,top,Screen.width-180,20),PythonScript.SysPath[i], SysPathStyle);
 
             if(GUI.Button(new Rect(Screen.width-170,top,80,20), "Open")) {
-                PythonBase.SysPath[i] = DialogLocation(PythonBase.SysPath[i]);
+                PythonScript.SysPath[i] = DialogLocation(PythonScript.SysPath[i]);
 
-                string paths = string.Join("\n", PythonBase.SysPath.ToArray());
+                string paths = string.Join("\n", PythonScript.SysPath.ToArray());
 
                 EditorPrefs.SetString("SysPath",paths);
 
             }
             if(GUI.Button(new Rect(Screen.width-85,top,80,20), "Delete")) 
-                PythonBase.SysPath.RemoveAt(i);
+                PythonScript.SysPath.RemoveAt(i);
 
             top += 25;
         }
@@ -89,7 +79,7 @@ public class PythonMenu : EditorWindow
         EditorGUILayout.EndVertical();
 
         if(GUI.Button(new Rect(0,Screen.height-45,Screen.width,20), "Add Path")) {
-            PythonBase.SysPath.Add("\\");
+            PythonScript.SysPath.Add("\\");
         }   
     }
 

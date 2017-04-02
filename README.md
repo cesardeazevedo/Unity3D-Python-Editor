@@ -1,22 +1,14 @@
-Unity3D-Python-Editor
+Unity3D-Python
 =====================
 
-Python interface based on IronPython for Unity3D with sweet editor for inspector
+Python interface based on IronPython for Unity3D
 
-![ScreenShot](http://img.pandawhale.com/94867-magic-gif-Shia-Imgur-MAH7.gif)
 
 > NOTE
 >
-> The project is a crazy experiment. i haven't tested about performance and others benchmarks.
+> The project is a crazy experiment. The performance is poor, especially for Update's methods with multiple entities.
 > Even though the interpreter works fine for a development environment, if you want to use Unity methods such as Start and Update (which works), 
 > i dot not recommend that you use for anything important yet.
-
-
-##Editor
-![ScreenShot](http://i.cubeupload.com/f9VN8B.png)
-
-##Interpreter
-![ScreenShot](http://i.cubeupload.com/gFjViz.png)
 
 ##Usage
 

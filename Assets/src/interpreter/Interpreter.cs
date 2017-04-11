@@ -3,9 +3,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using System.Text;
-using System.Collections;
 using IronPython.Hosting;
-using IronPython.Modules;
 using System.Collections.Generic;
 using Microsoft.Scripting.Hosting;
 
@@ -132,11 +130,11 @@ public class Interpreter
     /// </summary>
     private void SetLibrary()
     {
-        if(PythonBase.SysPath.Count > 0) {
+        if(PythonScript.SysPath.Count > 0) {
 
             ICollection<string> SysPath = Engine.GetSearchPaths();
 
-            foreach(string path in PythonBase.SysPath)
+            foreach(string path in PythonScript.SysPath)
                 SysPath.Add(path);
 
             Engine.SetSearchPaths(SysPath);

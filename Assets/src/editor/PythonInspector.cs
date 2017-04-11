@@ -4,347 +4,192 @@ using UnityEngine;
 using UnityEditor;
 using System.Text;
 using System.Linq;
-using System.Collections;
 
 /// <summary>
-/// Call python.
+/// Python Script Inspector
 /// </summary>
-[Serializable, CustomEditor(typeof(PythonBase))]
+[Serializable, CustomEditor(typeof(PythonScript))]
 public class PythonInspector : Editor
 {
+   PythonScript _target;
 
-    [SerializeField]
-    private PythonBase Target;
+   [SerializeField]
+   private PythonScript Target
+   {
+      get
+      {
+         if (_target == null)
+         {
+            _target = (PythonScript)target;
+         }
+         return _target;
+      }
+   }
 
-    private Interpreter python;
+   private Interpreter python;
+   private GUIStyle fontDrag;
+   private Rect dropArea;
 
-    public EditorView editor;
+   /// <summary>
+   /// Sets the styles of the inspector
+   /// </summary>
+   private void SetStyles()
+   {
+      //Style of text
+      fontDrag = new GUIStyle(GUI.skin.box);
+      fontDrag.fontSize = 16;
+      fontDrag.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
+      fontDrag.alignment = TextAnchor.MiddleCenter;
+      fontDrag.hover.background = TextureColor(Color.yellow);
+   }
 
-    private GUIStyle FontDrag, ButtonTabs;
+   /// <summary>
+   /// Creates a new python file.
+   /// </summary>
+   private void CreateFile()
+   {
+      string filepath = EditorUtility.SaveFilePanel("Create Python Script", "Assets", this.name, "py");
 
-    private int ColorSkinPro = 0;
+      if (filepath != string.Empty)
+      {
+         File.WriteAllText(filepath, Target.DefaultCode);
+         Target.FilePath = filepath;
+         Target.FileName = Path.GetFileName(filepath);
+         Target.FileCreated = true;
+      }
+   }
 
-    /// <summary>
-    /// Raises the enable event.
-    /// </summary>
-    private void OnEnable()
-    {
-        Target = (PythonBase)target;
+   /// <summary>
+   /// Show a box dialog
+   /// </summary>
+   /// <param name="error">String of error</param>
+   public static void DialogError(string error)
+   {
+      EditorUtility.DisplayDialog("Error Occurred", error, "OK");
+   }
 
-        if(editor == null)
-            editor = new EditorView();
+   /// <summary>
+   /// Loads the editor prefs.
+   /// </summary>
+   private void LoadEditorPrefs()
+   {
 
-        editor.OnEnable(Target);
+      string Paths = EditorPrefs.HasKey("SysPath") ?
+          EditorPrefs.GetString("SysPath") : "\\";
 
-        //Repaint Action Delegate
-        editor.RepaintAction += this.Repaint;
+      PythonScript.SysPath = Paths.Split('\n').ToList();
+   }
 
-        //Set view back 
-        SwitchView(Target.CurrentView);
+   /// <summary>
+   /// Raises the inspector GUI event.
+   /// </summary>
+   public override void OnInspectorGUI()
+   {
+      SetStyles();
 
-        LoadEditorPrefs();
+      EditorGUILayout.Space();
 
-        ColorSkinPro = !EditorGUIUtility.isProSkin ? 0 : 255;
+      dropArea = GUILayoutUtility.GetRect(Screen.width, 35, GUILayout.ExpandWidth(true));
 
-    }
+      if (string.IsNullOrEmpty(Target.FileName))
+         GUI.Box(dropArea, "Drag Python Script", fontDrag);
+      else
+         GUI.Box(dropArea, Target.FileName, fontDrag);
 
-    /// <summary>
-    /// Raises the disable event.
-    /// </summary>
-    private void OnDisable()
-    {
-        //Disable delegate
-        editor.RepaintAction -= this.Repaint;
-        //Ask for Save file
-        DialogFileSystem();
-    }
+      DragAndDropFile(dropArea);
 
-    /// <summary>
-    /// Sets the styles on inspector (Tabs, Font)
-    /// </summary>
-    private void SetStyles()
-    {
-        //Style of text
-        FontDrag = new GUIStyle(GUI.skin.box);
-        FontDrag.fontSize  = 16;
-        FontDrag.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
-        FontDrag.alignment = TextAnchor.MiddleCenter;
-        FontDrag.hover.background = TextureColor(Color.yellow); 
-        //Style of Tabs
-        ButtonTabs = new GUIStyle(GUI.skin.box);
-        ButtonTabs.fontSize = 16;
-        ButtonTabs.normal.textColor = Color.white;
-        ButtonTabs.alignment = TextAnchor.MiddleCenter;
+      EditorGUILayout.Space();
 
-        Color ColorTabs = new Color(ColorSkinPro,ColorSkinPro,ColorSkinPro,0.9f);
-        ButtonTabs.normal.background = TextureColor(ColorTabs);
-    }
+      FileEditButtons();
+   }
 
-    /// <summary>
-    /// Dialogs the file system.
-    /// </summary>
-    private void DialogFileSystem()
-    {
-        if(!Target.Saved && Target.HasChanges) {
+   /// <summary>
+   /// Compiles the current python script. Or creates a new one if it does not exist.
+   /// </summary>
+   public void Compile()
+   {
+      if (!Target.FileCreated)
+         CreateFile();
 
-            switch(DialogSave()) {
-                //Save
-                case 0:
-                    if(!Target.FileCreated)
-                        SaveFileLocation();
-                    else {
-                        SaveCodeToFile();
-                        Target.InMemory = false;
-                    }
-                    break;
-                    //Cancel
-                case 1:
-                    if(Target.FileCreated) {
-                        Target.Saved = true;
-                        Target.HasChanges = false;
-                    }
-                    break;
-                    //Keep in Memory
-                case 2:
-                    EditorDataBase.Instance.AddInstance(Target.GetInstanceID(), editor.Buffer);
-                    Target.InMemory = true;
-                    break;
+      python = new Interpreter();
+      string Response = python.Compile(Target.FilePath, Microsoft.Scripting.SourceCodeKind.Statements);
+
+      //Display if returned something, error, print, etc.
+      if (!String.IsNullOrEmpty(Response))
+         Debug.Log(Response);
+   }
+
+   /// <summary>
+   /// Drags and drop the file.
+   /// </summary>
+   /// <param name="DropArea">Drop area.</param>
+   private void DragAndDropFile(Rect DropArea)
+   {
+      Event current = Event.current;
+
+      switch (current.type)
+      {
+         case EventType.DragUpdated:
+         case EventType.DragPerform:
+
+            if (DropArea.Contains(current.mousePosition))
+            {
+               DragAndDrop.visualMode = DragAndDrop.paths.Length == 0 ? DragAndDropVisualMode.Rejected
+                   : DragAndDrop.paths[0].EndsWith(".py") ? DragAndDropVisualMode.Copy
+                   : DragAndDrop.paths[0].EndsWith(".txt") ? DragAndDropVisualMode.Copy
+                   : DragAndDropVisualMode.Rejected;
+
+               if (current.type == EventType.DragPerform)
+               {
+
+                  Target.FilePath = DragAndDrop.paths[0];
+                  Target.FileName = Path.GetFileName(Target.FilePath);
+
+                  Target.FileCreated = true;
+
+                  DragAndDrop.AcceptDrag();
+
+                  current.Use();
+               }
             }
-        }
-    }
-    /// <summary>
-    /// Saves the file system.
-    /// </summary>
-    /// <returns>The file system.</returns>
-    private void SaveFileLocation()
-    {
-        string Path = EditorUtility.SaveFilePanel("Save Python Script","Assets",this.name,"py");
+            break;
+      }
+   }
 
-        CreateFile(Path);
-    }
+   /// <summary>
+   /// File edit buttons
+   /// </summary>
+   private void FileEditButtons()
+   {
+      GUILayout.BeginVertical();
 
-    /// <summary>
-    /// Dialog this instance.
-    /// </summary>
-    private int DialogSave()
-    {
-        return EditorUtility.DisplayDialogComplex("Save Python File ", "Save File?", "Save", "Cancel", "Keep in Memory");
-    }
+      if (GUILayout.Button("Compile"))
+      {
+         Compile();
+      }
 
-    /// <summary>
-    /// Creates the file.
-    /// </summary>
-    /// <param name="FilePath">File path.</param>
-    /// <param name="FileName">File name.</param>
-    private void CreateFile(string FilePath)
-    {
-        if(FilePath != string.Empty) {
-            File.WriteAllText(FilePath,editor.Buffer.CodeBuffer);
-            Target.FilePath = FilePath;
-            Target.FileName = Path.GetFileName(FilePath);
-            Target.FileCreated = true;
-            Target.Saved = true;
-            Target.HasChanges = false;
-        }
-    }
+      if (GUILayout.Button("Edit"))
+      {
+         if (string.IsNullOrEmpty(Target.FilePath))
+            CreateFile();
+         else
+            UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal(Target.FilePath, 1);
+      }
 
-    /// <summary>
-    /// Saves the code to file.
-    /// </summary>
-    private void SaveCodeToFile()
-    {
-        File.WriteAllText(Target.FilePath,editor.Buffer.CodeBuffer, Encoding.UTF8);
-        Target.Saved      = true;
-        Target.InMemory   = false;
-        Target.HasChanges = false;
-        //Remove from memory
-        EditorDataBase.Instance.RemoveInstance(Target.GetInstanceID());
-    }
+      GUILayout.EndVertical();
+   }
 
-    /// <summary>
-    // "Compile" on save file
-    /// </summary>
-    private void CompileOnSave()
-    {
-        python = new Interpreter();
-        string Response = python.Compile(Target.FilePath, Microsoft.Scripting.SourceCodeKind.Statements);
-
-        //Display if returned something, error, print, etc.
-        if(!String.IsNullOrEmpty(Response))
-            Debug.Log(Response);
-    }
-
-    /// <summary>
-    /// Show a box dialog
-    /// </summary>
-    /// <param name="error">String of error</param>
-    public static void DialogError(string error)
-    {
-        EditorUtility.DisplayDialog("Error Occurred",error,"OK");
-    }
-
-    /// <summary>
-    /// Loads the editor prefs.
-    /// </summary>
-    private void LoadEditorPrefs()
-    {
-
-        string Paths = EditorPrefs.HasKey("SysPath") ?
-            EditorPrefs.GetString("SysPath") : "\\";
-
-        PythonBase.SysPath = Paths.Split('\n').ToList();
-    }
-
-    /// <summary>
-    /// Raises the inspector GU event.
-    /// </summary>
-    public override void OnInspectorGUI()
-    {
-
-        SetStyles();
-
-        DoSpace();
-
-        Rect DropArea = GUILayoutUtility.GetRect(Screen.width,50,GUILayout.ExpandWidth(true));
-
-        GUI.Box(DropArea,"Drag Python Script", FontDrag);
-
-        DragAndDropFile(DropArea);
-
-        DoSpace();
-
-        ToogleButtons();
-
-        editor.EditorViewGUI(Target.CurrentView == PythonBase.Views.Interpreter);
-
-        if(GUILayout.Button("Save and Compile")) {
-
-            Target.Saved = true;
-            Target.HasChanges = false;
-
-            if(!Target.FileCreated)
-                SaveFileLocation();
-            else
-                SaveCodeToFile();
-
-            CompileOnSave();
-        }
-    }
-
-    /// <summary>
-    /// Drags the and drop file.
-    /// </summary>
-    /// <param name="DropArea">Drop area.</param>
-    private void DragAndDropFile(Rect DropArea)
-    {
-        Event current = Event.current;
-
-        switch(current.type) {
-
-            case EventType.DragUpdated:
-            case EventType.DragPerform:
-
-                if(DropArea.Contains(current.mousePosition)) {
-                    DragAndDrop.visualMode = DragAndDrop.paths.Length == 0   ? DragAndDropVisualMode.Rejected 
-                        :   DragAndDrop.paths[0].EndsWith(".py")             ? DragAndDropVisualMode.Copy
-                        :   DragAndDrop.paths[0].EndsWith(".txt")            ? DragAndDropVisualMode.Copy
-                        :   DragAndDropVisualMode.Rejected;
-
-                    if(current.type == EventType.DragPerform) {
-
-                        Target.FilePath = DragAndDrop.paths[0];
-
-                        Target.FileName = Path.GetFileName(Target.FilePath);
-
-                        StreamReader file = new StreamReader(Target.FilePath,Encoding.UTF8);
-
-                        editor.Buffer.Initialize();
-
-                        string LocalBuffer = file.ReadToEnd();
-                        editor.Buffer.CodeBuffer = LocalBuffer == "" ? " " : LocalBuffer;
-
-                        Target.FileCreated = true;
-
-                        SwitchView(PythonBase.Views.Code);
-
-                        DragAndDrop.AcceptDrag();
-
-                        current.Use();
-                    }
-                }
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Toogles the tabs
-    /// </summary>
-    private void ToogleButtons()
-    {
-        GUILayout.BeginHorizontal();
-
-        bool Active = Target.CurrentView == PythonBase.Views.Code;
-
-        SwitchColors(Target.CurrentView == PythonBase.Views.Code);
-
-        //Check if file has changes and put "*"
-        string FileName = Target.FileName + ((Target.HasChanges) ? "*" : "");
-
-        //Limit the width of Tab
-        int width = Math.Min(Screen.width-200, 100 + FileName.Length*9);
-        if(GUILayout.Toggle(Active, FileName, ButtonTabs, GUILayout.Width(width),
-                    GUILayout.Height(40)) != Active) {
-
-            SwitchView(PythonBase.Views.Code);
-        }
-
-        SwitchColors(Target.CurrentView == PythonBase.Views.Interpreter);
-        if(GUILayout.Toggle(Active, "Interpreter", ButtonTabs, GUILayout.Width(170),
-                    GUILayout.Height(40)) != Active) {
-
-            SwitchView(PythonBase.Views.Interpreter);
-            editor.Buffer.CurrentLine = string.Empty;
-            editor.InitializeInterpreter();
-        }
-
-        GUILayout.EndHorizontal();
-    }
-
-    private void SwitchView(PythonBase.Views view)
-    {
-        editor.Buffer.InterpreterView = editor.InterpreterView
-                                      = (view == PythonBase.Views.Interpreter);
-        Target.CurrentView = view;
-    }
-
-    private void SwitchColors(bool view)
-    {
-        Color ActiveColor = view ? new Color(ColorSkinPro,ColorSkinPro,ColorSkinPro,0.35f) :
-                                   new Color(ColorSkinPro,ColorSkinPro,ColorSkinPro,0.50f);
-
-        ButtonTabs.normal.background = TextureColor(ActiveColor);
-    }
-
-    /// <summary>
-    /// Spacing of InspectorGUI
-    /// </summary>
-    private void DoSpace()
-    {
-        EditorGUILayout.Space();
-    }
-
-    /// <summary>
-    /// Applies a color to a texture.
-    /// </summary>
-    /// <returns>The color.</returns>
-    /// <param name="color">Color.</param>
-    private static Texture2D TextureColor(Color color)
-    {
-        Texture2D TextureColor = new Texture2D(1, 1);
-        TextureColor.SetPixels(new Color[] { color });
-        TextureColor.Apply();
-        TextureColor.hideFlags = HideFlags.HideAndDontSave;
-        return TextureColor;
-    }
-
+   /// <summary>
+   /// Applies a color to a texture.
+   /// </summary>
+   /// <returns>The color.</returns>
+   /// <param name="color">Color.</param>
+   private static Texture2D TextureColor(Color color)
+   {
+      Texture2D TextureColor = new Texture2D(1, 1);
+      TextureColor.SetPixels(new Color[] { color });
+      TextureColor.Apply();
+      TextureColor.hideFlags = HideFlags.HideAndDontSave;
+      return TextureColor;
+   }
 }

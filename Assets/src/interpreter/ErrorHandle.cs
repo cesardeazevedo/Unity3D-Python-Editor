@@ -1,7 +1,4 @@
-﻿using System;
-using IronPython.Hosting;
-using IronPython.Modules;
-using Microsoft.Scripting;
+﻿using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 
 /// <summary>

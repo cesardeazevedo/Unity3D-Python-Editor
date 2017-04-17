@@ -12,14 +12,11 @@ Python interface based on IronPython for Unity3D with sweet editor for inspector
 > i dot not recommend that you use for anything important yet.
 
 
-##Editor
+## Editor
 ![ScreenShot](http://i.cubeupload.com/f9VN8B.png)
 
-##Interpreter
+## Interpreter
 ![ScreenShot](http://i.cubeupload.com/gFjViz.png)
 
-##Usage
-
-
-##LICENSE
+## LICENSE
 [MIT](./LICENSE)
